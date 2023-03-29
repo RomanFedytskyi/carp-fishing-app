@@ -212,7 +212,7 @@ const LakeEditor = ({ selectedLakeIndex, onClose }) => {
             )}
           </div>
         ))}
-        <LakeStructure numberOfRays={6} />
+        <LakeStructure numberOfRays={7} />
         <Form.Item>
           <Button type="primary" onClick={handleSubmit}>
             {selectedLakeIndex !== null ? 'Save' : 'Add'}
