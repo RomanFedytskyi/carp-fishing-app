@@ -1,5 +1,6 @@
 import React from 'react';
 import { Map, GoogleApiWrapper, Marker } from 'google-maps-react';
+import { GOOGLE_MAPS_API } from '../../keys';
 
 const containerStyle = {
   position: 'relative',
@@ -45,6 +46,6 @@ const LakeMap = ({ location, markerPosition, setMarkerPosition, google }) => {
 };
 
 export default GoogleApiWrapper({
-  apiKey: 'AIzaSyCPiCIZL4dszBjnNLrvXO2_0eCpZI5DSCM',
+  apiKey: GOOGLE_MAPS_API,
 })(LakeMap);
 

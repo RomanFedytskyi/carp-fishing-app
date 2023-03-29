@@ -1,9 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { InputNumber, Input, Button, Form } from 'antd';
+import { Input, Button, Form, Space } from 'antd';
 import createSVGPlot from './createSVGPlot';
 import './LakeStructure.scss';
 
-const LakeStructure = ({ numberOfRays = 6, rayData = [], updateRayData, initialDistance = 1, updateDistance }) => {
+const LakeStructure = ({
+  numberOfRays = 7,
+  updateNumberOfRays,
+  rayData = [],
+  updateRayData,
+  initialDistance = 1,
+  updateDistance,
+}) => {
   const [distance, setDistance] = useState(initialDistance);
   const [selectedRay, setSelectedRay] = useState(null);
   const [depthInputValue, setDepthInputValue] = useState('');
@@ -37,6 +44,15 @@ const LakeStructure = ({ numberOfRays = 6, rayData = [], updateRayData, initialD
     }
   };
 
+  const handleNumberOfRaysChange = (e) => {
+    updateNumberOfRays(+e.target.value);
+  };
+
+  // Function to check if there is depth in any ray
+  const hasDepthInAnyRay = () => {
+    return rayData.some((ray) => ray.length > 0);
+  };
+
   useEffect(() => {
     // Update the SVG plot when the number of rays or distance changes
     if (svgRef.current) {
@@ -47,16 +63,29 @@ const LakeStructure = ({ numberOfRays = 6, rayData = [], updateRayData, initialD
   return (
     <div className="lake-structure">
       <h3>Lake Structure</h3>
-      <Form.Item label="Distance between measuring points (meters)">
-        <InputNumber
-          value={distance}
-          onChange={(value) => {
-            setDistance(value);
-            updateDistance(value);
-          }}
-          min={1}
-          step={0.1}
-        />
+      <Form.Item label="Structure">
+        <Space>
+          <Input
+            type="number"
+            addonBefore="Rays:"
+            value={numberOfRays}
+            onChange={handleNumberOfRaysChange}
+            min={1}
+            max={20}
+            disabled={hasDepthInAnyRay()} // Disable input if there's depth in any ray
+          />
+          <Input
+            type="number"
+            addonBefore="Distance (meters):"
+            value={distance}
+            onChange={(e) => {
+              setDistance(+e.target.value);
+              updateDistance(+e.target.value);
+            }}
+            min={1}
+            step={0.1}
+          />
+        </Space>
       </Form.Item>
       <svg ref={svgRef} width="100%" height="300px" />
       {selectedRay !== null && (

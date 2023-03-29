@@ -6,6 +6,8 @@ import { Button, Form } from 'antd';
 import './LakeEditor.scss';
 import LakeNotes from '../LakeNotes/LakeNotes';
 import LakeDetails from '../LakeDetails/LakeDetails';
+import { db } from '../../firebase';
+import { doc, setDoc, addDoc, collection } from 'firebase/firestore';
 
 const LakeEditor = ({ selectedLakeIndex, onClose }) => {
   const { lakes, setLakes } = useContext(LakesContext);
@@ -30,6 +32,7 @@ const LakeEditor = ({ selectedLakeIndex, onClose }) => {
         })
       : []
   );
+
   const [location, setLocation] = useState(
     selectedLakeIndex !== null
       ? lakes[selectedLakeIndex].location
@@ -38,18 +41,30 @@ const LakeEditor = ({ selectedLakeIndex, onClose }) => {
   const [markerPosition, setMarkerPosition] = useState(
     selectedLakeIndex !== null ? lakes[selectedLakeIndex].location : location
   );
+  const rayDataArray = lakes[selectedLakeIndex].rayData.map((rayObj) => {
+    return Object.values(rayObj)[0];
+  });
+
   const [rayData, setRayData] = useState(
-    selectedLakeIndex !== null ? lakes[selectedLakeIndex].rayData : []
+    selectedLakeIndex !== null ? rayDataArray : []
   );
   const [distance, setDistance] = useState(
     selectedLakeIndex !== null ? lakes[selectedLakeIndex].distance : 1
   );
+  const [numberOfRays, setNumberOfRays] = useState(
+    selectedLakeIndex !== null ? lakes[selectedLakeIndex].numberOfRays : 7
+  );
+  
 
   useEffect(() => {
     if (selectedLakeIndex === null) {
       getCurrentLocation();
     }
   }, []);
+
+  const handleNumberOfRaysChange = (newNumberOfRays) => {
+    setNumberOfRays(newNumberOfRays);
+  };
 
   const getCurrentLocation = () => {
     if (navigator.geolocation) {
@@ -73,20 +88,24 @@ const LakeEditor = ({ selectedLakeIndex, onClose }) => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const newLake = {
       name,
       description,
       notes: notes,
       location: markerPosition,
-      rayData,
+      rayData: rayData.map((ray, index) => ({
+        [`ray${index + 1}`]: ray,
+      })),
       distance,
+      numberOfRays
     };
 
     if (selectedLakeIndex !== null) {
-      setLakes([...lakes.slice(0, selectedLakeIndex), newLake, ...lakes.slice(selectedLakeIndex + 1)]);
+      const lakeRef = doc(db, 'lakes', lakes[selectedLakeIndex].id);
+      await setDoc(lakeRef, newLake);
     } else {
-      setLakes([...lakes, newLake]);
+      await addDoc(collection(db, 'lakes'), newLake);
     }
 
     onClose();
@@ -109,7 +128,8 @@ const LakeEditor = ({ selectedLakeIndex, onClose }) => {
         />
         <LakeNotes notes={notes} setNotes={setNotes} />
         <LakeStructure
-          numberOfRays={7}
+          numberOfRays={numberOfRays}
+          updateNumberOfRays={handleNumberOfRaysChange}
           rayData={rayData}
           updateRayData={setRayData}
           initialDistance={distance}

@@ -10,7 +10,6 @@ const containerStyle = {
 };
 
 const LakePreview = ({ lake }) => {
-  console.log(lake);
   return (
     <div className="lake-preview">
       <LoadScriptNext googleMapsApiKey={apiKey}>
