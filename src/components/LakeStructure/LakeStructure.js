@@ -22,7 +22,8 @@ const LakeStructure = ({ numberOfRays = 6 }) => {
     if (depthInputValue) {
       const newDepths = depthInputValue.split(',').map(parseFloat);
       const updatedRayData = [...rayData];
-      updatedRayData[selectedRay] = newDepths.map((depth) => ({
+
+      updatedRayData[selectedRay] = newDepths.reverse().map((depth) => ({
         depth,
         distance: distance,
       }));

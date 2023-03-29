@@ -1,4 +1,5 @@
 import { select } from "d3";
+import { getBGColor, getTextColor } from "../../helper";
 
 const createSVGPlot = (
   svgElement,
@@ -71,40 +72,40 @@ const createSVGPlot = (
       .attr("fill", "none");
   }
 
-// Draw data points for each ray
-rayData.forEach((dataPoints, i) => {
-  const angle = (Math.PI * i) / (numberOfRays - 1);
+  // Draw data points for each ray
+  rayData.forEach((dataPoints, i) => {
+    const angle = (Math.PI * i) / (numberOfRays - 1);
 
-  for (let j = 0; j < dataPoints.length; j++) {
-    const point = dataPoints[j];
-    if (Number.isFinite(point.depth) && Number.isFinite(point.distance)) {
-      const distanceFraction = ((j+1) * point.distance) / radiusInMeters;
+    for (let j = 0; j < dataPoints.length; j++) {
+      const point = dataPoints[j];
+      if (Number.isFinite(point.depth) && Number.isFinite(point.distance)) {
+        const distanceFraction = ((j+1) * point.distance) / radiusInMeters;
 
-      const x = centerX + radius * distanceFraction * Math.cos(angle);
-      const y = centerY - radius * distanceFraction * Math.sin(angle);
+        const x = centerX + radius * distanceFraction * Math.cos(angle);
+        const y = centerY - radius * distanceFraction * Math.sin(angle);
 
-      // Draw a white dot
-      svg
-        .append("circle")
-        .attr("cx", x)
-        .attr("cy", y)
-        .attr("r", 6)
-        .attr("fill", "white")
-        .attr("stroke", "black");
+        // Draw a white dot
+        svg
+          .append("circle")
+          .attr("cx", x)
+          .attr("cy", y)
+          .attr("r", "8px")
+          .attr("fill", getBGColor(point.depth))
+          .attr("stroke", "black");
 
-      // Overlay the depth value on the white dot
-      svg
-        .append("text")
-        .attr("x", x)
-        .attr("y", y)
-        .attr("text-anchor", "middle")
-        .attr("alignment-baseline", "central")
-        .attr("font-size", "12px")
-        .attr("fill", "black")
-        .text(point.depth);
+        // Overlay the depth value on the white dot
+        svg
+          .append("text")
+          .attr("x", x)
+          .attr("y", y)
+          .attr("text-anchor", "middle")
+          .attr("alignment-baseline", "central")
+          .attr("font-size", "8px")
+          .attr("fill", getTextColor(point.depth))
+          .text(point.depth);
+      }
     }
-  }
-});
+  });
 
 };
 
