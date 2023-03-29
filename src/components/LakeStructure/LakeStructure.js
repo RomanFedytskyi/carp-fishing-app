@@ -3,32 +3,35 @@ import { InputNumber, Input, Button, Form } from 'antd';
 import createSVGPlot from './createSVGPlot';
 import './LakeStructure.scss';
 
-const LakeStructure = ({ numberOfRays = 6 }) => {
-  const [distance, setDistance] = useState(1);
-  const [rayData, setRayData] = useState(Array(numberOfRays).fill([]));
+const LakeStructure = ({ numberOfRays = 6, rayData = [], updateRayData, initialDistance = 1, updateDistance }) => {
+  const [distance, setDistance] = useState(initialDistance);
   const [selectedRay, setSelectedRay] = useState(null);
   const [depthInputValue, setDepthInputValue] = useState('');
+  const [rayDataState, setRayDataState] = useState(rayData.length ? rayData : Array(numberOfRays).fill([]));
+
 
   const svgRef = React.createRef();
 
   const handleRayClick = (rayIndex) => {
     setSelectedRay(rayIndex);
-    if (!rayData[rayIndex]) {
-      setRayData({ ...rayData, [rayIndex]: [] });
+    if (!rayDataState[rayIndex]) {
+      setRayDataState({ ...rayDataState, [rayIndex]: [] });
     }
   };
 
   const handleDepthSubmit = () => {
     if (depthInputValue) {
       const newDepths = depthInputValue.split(',').map(parseFloat);
-      const updatedRayData = [...rayData];
+      const updatedRayData = [...rayDataState];
 
       updatedRayData[selectedRay] = newDepths.reverse().map((depth) => ({
         depth,
         distance: distance,
       }));
-      setRayData(updatedRayData);
-
+      setRayDataState(updatedRayData);
+      updateRayData(updatedRayData);
+      setDepthInputValue('');
+      setSelectedRay(null);
     } else {
       console.error('No depth values provided');
     }
@@ -37,9 +40,9 @@ const LakeStructure = ({ numberOfRays = 6 }) => {
   useEffect(() => {
     // Update the SVG plot when the number of rays or distance changes
     if (svgRef.current) {
-      createSVGPlot(svgRef.current, numberOfRays, rayData, distance, handleRayClick);
+      createSVGPlot(svgRef.current, numberOfRays, rayDataState, distance, handleRayClick);
     }
-  }, [numberOfRays, rayData, distance, handleRayClick]);
+  }, [numberOfRays, rayDataState, distance, handleRayClick]);
 
   return (
     <div className="lake-structure">
@@ -47,7 +50,10 @@ const LakeStructure = ({ numberOfRays = 6 }) => {
       <Form.Item label="Distance between measuring points (meters)">
         <InputNumber
           value={distance}
-          onChange={(value) => setDistance(value)}
+          onChange={(value) => {
+            setDistance(value);
+            updateDistance(value);
+          }}
           min={1}
           step={0.1}
         />
