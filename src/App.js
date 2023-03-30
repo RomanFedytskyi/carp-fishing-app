@@ -7,19 +7,22 @@ import LakeList from "./components/LakeList/LakeList";
 import LakeEditor from "./components/LakeEditor/LakeEditor";
 import { Layout } from 'antd';
 import AppHeader from './components/Header/Header';
+import { LakesProvider } from "./LakesContext";
 
 import "./App.scss";
 
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/sign-in" element={<SignIn />} />
-          <Route path="/sign-up" element={<SignUp />} />
-          <Route path="/*" element={<PrivateWrapper />} />
-        </Routes>
-      </Router>
+      <LakesProvider>
+        <Router>
+          <Routes>
+            <Route path="/sign-in" element={<SignIn />} />
+            <Route path="/sign-up" element={<SignUp />} />
+            <Route path="/*" element={<PrivateWrapper />} />
+          </Routes>
+        </Router>
+      </LakesProvider>
     </AuthProvider>
   );
 }

@@ -25,22 +25,24 @@ const SignIn = () => {
   }
 
   return (
-    <div className="signin">
-      <h2>Log In</h2>
-      {error && <Alert message={error} type="error" />}
-      <Form onFinish={handleSubmit}>
-        <Form.Item>
-          <Input placeholder="Email" ref={emailRef} required />
-        </Form.Item>
-        <Form.Item>
-          <Input.Password placeholder="Password" ref={passwordRef} required />
-        </Form.Item>
-        <Button type="primary" htmlType="submit" disabled={loading}>
-          Log In
-        </Button>
-      </Form>
-      <div>
-        Need an account? <Link to="/sign-up">Sign Up</Link>
+    <div className="signin-form-container">
+      <div className="signin">
+        <h2>Log In</h2>
+        {error && <Alert message={error} type="error" />}
+        <Form onFinish={handleSubmit}>
+          <Form.Item>
+            <Input placeholder="Email" ref={emailRef} required />
+          </Form.Item>
+          <Form.Item>
+            <Input.Password placeholder="Password" ref={passwordRef} required />
+          </Form.Item>
+          <Button type="primary" htmlType="submit" disabled={loading}>
+            Log In
+          </Button>
+        </Form>
+        <div>
+          Need an account? <Link to="/sign-up">Sign Up</Link>
+        </div>
       </div>
     </div>
   );

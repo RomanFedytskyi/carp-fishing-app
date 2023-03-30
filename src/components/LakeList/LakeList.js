@@ -5,11 +5,13 @@ import { LakesContext } from '../../LakesContext';
 import LakePreview from '../LakePreview/LakePreview';
 import { collection, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../../firebase';
+import { useAuth } from "../../AuthContext";
 
 import './LakeList.scss';
 
 const LakeList = ({ onLakeSelect }) => {
   const { lakes } = useContext(LakesContext);
+  const { currentUser } = useAuth();
 
   const getLastNotes = (notes) => {
     return notes
@@ -24,11 +26,11 @@ const LakeList = ({ onLakeSelect }) => {
   const handleDeleteLake = async (e, lakeId) => {
     e.stopPropagation();
     try {
-      await deleteDoc(doc(collection(db, 'lakes'), lakeId));
+      await deleteDoc(doc(collection(db, "users", currentUser.uid, "userLakes"), lakeId));
     } catch (error) {
-      console.error('Error deleting lake:', error);
+      console.error("Error deleting lake:", error);
     }
-  };
+  };  
 
   return (
     <div className="lake-list">

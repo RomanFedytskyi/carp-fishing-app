@@ -8,6 +8,7 @@ import LakeNotes from '../LakeNotes/LakeNotes';
 import LakeDetails from '../LakeDetails/LakeDetails';
 import { db } from '../../firebase';
 import { doc, setDoc, addDoc, collection } from 'firebase/firestore';
+import { useAuth } from "../../AuthContext";
 
 const LakeEditor = ({ selectedLakeIndex, onClose }) => {
   const { lakes, setLakes } = useContext(LakesContext);
@@ -32,6 +33,7 @@ const LakeEditor = ({ selectedLakeIndex, onClose }) => {
         })
       : []
   );
+  const { currentUser } = useAuth();
 
   const [location, setLocation] = useState(
     selectedLakeIndex !== null
@@ -104,10 +106,10 @@ const LakeEditor = ({ selectedLakeIndex, onClose }) => {
     };
 
     if (selectedLakeIndex !== null) {
-      const lakeRef = doc(db, 'lakes', lakes[selectedLakeIndex].id);
+      const lakeRef = doc(db, "users", currentUser.uid, "userLakes", lakes[selectedLakeIndex].id);
       await setDoc(lakeRef, newLake);
     } else {
-      await addDoc(collection(db, 'lakes'), newLake);
+      await addDoc(collection(db, "users", currentUser.uid, "userLakes"), newLake);
     }
 
     onClose();

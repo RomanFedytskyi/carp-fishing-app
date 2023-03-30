@@ -30,25 +30,27 @@ const SignUp = () => {
   }
 
   return (
-    <div className="signup">
-      <h2>Sign Up</h2>
-      {error && <Alert message={error} type="error" />}
-      <Form onFinish={handleSubmit}>
-        <Form.Item>
-          <Input placeholder="Email" ref={emailRef} required />
-        </Form.Item>
-        <Form.Item>
-          <Input.Password placeholder="Password" ref={passwordRef} required />
-        </Form.Item>
-        <Form.Item>
-          <Input.Password placeholder="Confirm Password" ref={passwordConfirmRef} required />
-        </Form.Item>
-        <Button type="primary" htmlType="submit" disabled={loading}>
-          Sign Up
-        </Button>
-      </Form>
-      <div>
-        Already have an account? <Link to="/sign-in">Log In</Link>
+    <div className="signup-form-container">
+      <div className="signup">
+        <h2>Sign Up</h2>
+        {error && <Alert message={error} type="error" />}
+        <Form onFinish={handleSubmit}>
+          <Form.Item>
+            <Input placeholder="Email" ref={emailRef} required />
+          </Form.Item>
+          <Form.Item>
+            <Input.Password placeholder="Password" ref={passwordRef} required />
+          </Form.Item>
+          <Form.Item>
+            <Input.Password placeholder="Confirm Password" ref={passwordConfirmRef} required />
+          </Form.Item>
+          <Button type="primary" htmlType="submit" disabled={loading}>
+            Sign Up
+          </Button>
+        </Form>
+        <div>
+          Already have an account? <Link to="/sign-in">Log In</Link>
+        </div>
       </div>
     </div>
   );
