@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { AuthProvider, useAuth } from "./AuthContext";
 import SignIn from "./components/Auth/SignIn";
-import SignUp from "./components/Auth/SighUp";
+import SignUp from "./components/Auth/SignUp";
 import LakeList from "./components/LakeList/LakeList";
 import LakeEditor from "./components/LakeEditor/LakeEditor";
+import { Layout } from 'antd';
+import AppHeader from './components/Header/Header';
+
 import "./App.scss";
 
 function App() {
@@ -32,22 +35,25 @@ const ProtectedApp = () => {
   const [isEditorOpen, setIsEditorOpen] = useState(false);
 
   return (
-    <div className="App">
-      {!isEditorOpen && (
-        <LakeList
-          onLakeSelect={(index) => {
-            setSelectedLakeIndex(index);
-            setIsEditorOpen(true);
-          }}
-        />
-      )}
-      {isEditorOpen && (
-        <LakeEditor
-          selectedLakeIndex={selectedLakeIndex}
-          onClose={() => setIsEditorOpen(false)}
-        />
-      )}
-    </div>
+    <Layout className="App">
+      <AppHeader />
+      <Layout.Content>
+        {!isEditorOpen && (
+          <LakeList
+            onLakeSelect={(index) => {
+              setSelectedLakeIndex(index);
+              setIsEditorOpen(true);
+            }}
+          />
+        )}
+        {isEditorOpen && (
+          <LakeEditor
+            selectedLakeIndex={selectedLakeIndex}
+            onClose={() => setIsEditorOpen(false)}
+          />
+        )}
+      </Layout.Content>
+    </Layout>
   );
 };
 
