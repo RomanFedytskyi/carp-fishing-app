@@ -21,6 +21,7 @@ const LakeStructure = ({
 
   const svgRef = React.createRef();
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleRayClick = (rayIndex) => {
     setSelectedRay(rayIndex);
     if (!rayDataState[rayIndex]) {

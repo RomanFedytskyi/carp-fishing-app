@@ -66,6 +66,7 @@ const LakeEditor = ({ selectedLakeIndex, onClose }) => {
     if (selectedLakeIndex === null) {
       getCurrentLocation();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleNumberOfRaysChange = (newNumberOfRays) => {
