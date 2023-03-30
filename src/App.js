@@ -1,16 +1,45 @@
-import React, { useState } from 'react';
-import LakeList from './components/LakeList/LakeList';
-import LakeEditor from './components/LakeEditor/LakeEditor';
-import './App.scss';
+import React, { useState } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { AuthProvider, useAuth } from "./AuthContext";
+import SignIn from "./components/Auth/SignIn";
+import SignUp from "./components/Auth/SighUp";
+import LakeList from "./components/LakeList/LakeList";
+import LakeEditor from "./components/LakeEditor/LakeEditor";
+import "./App.scss";
 
 function App() {
+  return (
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/sign-in" element={<SignIn />} />
+          <Route path="/sign-up" element={<SignUp />} />
+          <Route path="/*" element={<PrivateWrapper />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
+  );
+}
+
+const PrivateWrapper = () => {
+  const { currentUser } = useAuth();
+
+  return currentUser ? <ProtectedApp /> : <SignIn />;
+};
+
+const ProtectedApp = () => {
   const [selectedLakeIndex, setSelectedLakeIndex] = useState(null);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
 
   return (
     <div className="App">
       {!isEditorOpen && (
-        <LakeList onLakeSelect={(index) => { setSelectedLakeIndex(index); setIsEditorOpen(true); }} />
+        <LakeList
+          onLakeSelect={(index) => {
+            setSelectedLakeIndex(index);
+            setIsEditorOpen(true);
+          }}
+        />
       )}
       {isEditorOpen && (
         <LakeEditor
@@ -20,6 +49,6 @@ function App() {
       )}
     </div>
   );
-}
+};
 
 export default App;

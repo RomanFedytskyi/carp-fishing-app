@@ -1,7 +1,10 @@
 import React, { useContext } from 'react';
-import { List, Button } from 'antd';
+import { List, Button, Popconfirm } from 'antd';
+import { DeleteOutlined } from '@ant-design/icons';
 import { LakesContext } from '../../LakesContext';
 import LakePreview from '../LakePreview/LakePreview';
+import { collection, deleteDoc, doc } from 'firebase/firestore';
+import { db } from '../../firebase';
 
 import './LakeList.scss';
 
@@ -16,6 +19,15 @@ const LakeList = ({ onLakeSelect }) => {
         (note) => `Bait: ${note.fishBite.bait}, Distance: ${note.fishBite.distance}m`
       )
       .join(' | ');
+  };
+
+  const handleDeleteLake = async (e, lakeId) => {
+    e.stopPropagation();
+    try {
+      await deleteDoc(doc(collection(db, 'lakes'), lakeId));
+    } catch (error) {
+      console.error('Error deleting lake:', error);
+    }
   };
 
   return (
@@ -34,6 +46,21 @@ const LakeList = ({ onLakeSelect }) => {
               <div className="lake-notes">{getLastNotes(lake.notes)}</div>
             </div>
             <LakePreview lake={lake} className="lake-preview" />
+            <Popconfirm
+              title="Are you sure you want to delete this lake?"
+              onConfirm={(e) => handleDeleteLake(e, lake.id)}
+              onCancel={(e) => e.stopPropagation()}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button
+                type="text"
+                shape="circle"
+                className="delete-lake-button"
+                icon={<DeleteOutlined />}
+                onClick={(e) => e.stopPropagation()}
+              />
+            </Popconfirm>
           </List.Item>
         )}
       />

@@ -41,10 +41,12 @@ const LakeEditor = ({ selectedLakeIndex, onClose }) => {
   const [markerPosition, setMarkerPosition] = useState(
     selectedLakeIndex !== null ? lakes[selectedLakeIndex].location : location
   );
-  const rayDataArray = lakes[selectedLakeIndex].rayData.map((rayObj) => {
-    return Object.values(rayObj)[0];
-  });
-
+  const rayDataArray =
+  selectedLakeIndex !== null
+    ? lakes[selectedLakeIndex].rayData.map((rayObj) => {
+        return Object.values(rayObj)[0];
+      })
+    : [];
   const [rayData, setRayData] = useState(
     selectedLakeIndex !== null ? rayDataArray : []
   );

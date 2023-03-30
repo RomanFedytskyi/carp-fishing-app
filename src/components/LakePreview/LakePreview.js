@@ -1,8 +1,7 @@
 import React from 'react';
 import { GoogleMap, LoadScriptNext, Marker } from '@react-google-maps/api';
 import './LakePreview.scss';
-
-const apiKey = 'AIzaSyCPiCIZL4dszBjnNLrvXO2_0eCpZI5DSCM';
+import { GOOGLE_MAPS_API } from '../../keys';
 
 const containerStyle = {
   width: '100%',
@@ -12,7 +11,7 @@ const containerStyle = {
 const LakePreview = ({ lake }) => {
   return (
     <div className="lake-preview">
-      <LoadScriptNext googleMapsApiKey={apiKey}>
+      <LoadScriptNext googleMapsApiKey={GOOGLE_MAPS_API}>
         <GoogleMap
           mapContainerStyle={containerStyle}
           center={lake.location}

@@ -15,9 +15,18 @@
     cursor: pointer;
     border-bottom: 1px solid #d9d9d9;
     margin-bottom: 20px;
+    position: relative;
 
     &:hover {
       background-color: #fafafa;
+    }
+
+    .delete-lake-button {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background-color: red;
+      color: white;
     }
   }
 
