@@ -11,7 +11,7 @@ import { doc, setDoc, addDoc, collection } from 'firebase/firestore';
 import { useAuth } from "../../AuthContext";
 
 const LakeEditor = ({ selectedLakeIndex, onClose }) => {
-  const { lakes, setLakes } = useContext(LakesContext);
+  const { lakes } = useContext(LakesContext);
   const [name, setName] = useState(selectedLakeIndex !== null ? lakes[selectedLakeIndex].name : '');
   const [description, setDescription] = useState(selectedLakeIndex !== null ? lakes[selectedLakeIndex].description : '');
   const [notes, setNotes] = useState(
@@ -58,7 +58,9 @@ const LakeEditor = ({ selectedLakeIndex, onClose }) => {
   const [numberOfRays, setNumberOfRays] = useState(
     selectedLakeIndex !== null ? lakes[selectedLakeIndex].numberOfRays : 7
   );
-  
+  const [radiusInMeters, setRadiusInMeters] = useState(
+    selectedLakeIndex !== null ? lakes[selectedLakeIndex].radiusInMeters : 100
+  );
 
   useEffect(() => {
     if (selectedLakeIndex === null) {
@@ -102,7 +104,8 @@ const LakeEditor = ({ selectedLakeIndex, onClose }) => {
         [`ray${index + 1}`]: ray,
       })),
       distance,
-      numberOfRays
+      numberOfRays,
+      radiusInMeters
     };
 
     if (selectedLakeIndex !== null) {
@@ -138,6 +141,8 @@ const LakeEditor = ({ selectedLakeIndex, onClose }) => {
           updateRayData={setRayData}
           initialDistance={distance}
           updateDistance={setDistance}
+          radiusInMeters={radiusInMeters}
+          updateRadiusInMeters={setRadiusInMeters}
         />
         <Form.Item>
           <Button type="primary" onClick={handleSubmit}>

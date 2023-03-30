@@ -10,6 +10,8 @@ const LakeStructure = ({
   updateRayData,
   initialDistance = 1,
   updateDistance,
+  radiusInMeters = 100,
+  updateRadiusInMeters,
 }) => {
   const [distance, setDistance] = useState(initialDistance);
   const [selectedRay, setSelectedRay] = useState(null);
@@ -56,15 +58,22 @@ const LakeStructure = ({
   useEffect(() => {
     // Update the SVG plot when the number of rays or distance changes
     if (svgRef.current) {
-      createSVGPlot(svgRef.current, numberOfRays, rayDataState, distance, handleRayClick);
+      createSVGPlot(
+        svgRef.current,
+        numberOfRays,
+        rayDataState,
+        distance,
+        handleRayClick,
+        radiusInMeters
+      );
     }
-  }, [numberOfRays, rayDataState, distance, handleRayClick]);
+  }, [svgRef, numberOfRays, rayDataState, distance, handleRayClick, radiusInMeters]);
 
   return (
     <div className="lake-structure">
       <h3>Lake Structure</h3>
-      <Form.Item label="Structure">
-        <Space>
+      <Form.Item>
+        <Space direction='vertical'>
           <Input
             type="number"
             addonBefore="Rays:"
@@ -76,7 +85,14 @@ const LakeStructure = ({
           />
           <Input
             type="number"
-            addonBefore="Distance (meters):"
+            addonBefore="Total distance (meters):"
+            value={radiusInMeters}
+            onChange={(e) => updateRadiusInMeters(+e.target.value)}
+            disabled={hasDepthInAnyRay()} // Disable input if there's depth in any ray
+          />
+          <Input
+            type="number"
+            addonBefore="Distance between points (meters):"
             value={distance}
             onChange={(e) => {
               setDistance(+e.target.value);

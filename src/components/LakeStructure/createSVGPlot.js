@@ -6,7 +6,8 @@ const createSVGPlot = (
   numberOfRays,
   rayData,
   distance,
-  onRayClick
+  onRayClick,
+  radiusInMeters
 ) => {
   const svg = select(svgElement);
   const parentElement = svgElement.parentNode;
@@ -15,7 +16,6 @@ const createSVGPlot = (
   const centerX = width / 2;
   const centerY = height;
   const radius = width / 2;
-  const radiusInMeters = 160;
   const circleSpacing = 20;
   const numberOfCircles = radiusInMeters / circleSpacing;
 
