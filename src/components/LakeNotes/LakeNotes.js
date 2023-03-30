@@ -11,6 +11,8 @@ const LakeNotes = ({ notes, setNotes }) => {
     nozzle: '',
     bait: '',
     distance: '',
+    fishKind: '',
+    weight: null,
   });
 
   const addNote = () => {
@@ -41,6 +43,8 @@ const LakeNotes = ({ notes, setNotes }) => {
       nozzle: '',
       bait: '',
       distance: '',
+      fishKind: '',
+      weight: null,
     });
   };
 
@@ -74,6 +78,25 @@ const LakeNotes = ({ notes, setNotes }) => {
               value={fishBite.distance}
               onChange={(e) =>
                 setFishBite({ ...fishBite, distance: e.target.value })
+              }
+              min={0}
+              step={0.1}
+            />
+          </Form.Item>
+          <Form.Item label="Kind of Fish" className="fish-bait-input">
+            <Input
+              value={fishBite.fishKind}
+              onChange={(e) =>
+                setFishBite({ ...fishBite, fishKind: e.target.value })
+              }
+            />
+          </Form.Item>
+          <Form.Item label="Weight (kg)" className="fish-bait-input">
+            <Input
+              type="number"
+              value={fishBite.weight}
+              onChange={(e) =>
+                setFishBite({ ...fishBite, weight: parseFloat(e.target.value) })
               }
               min={0}
               step={0.1}
