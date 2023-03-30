@@ -1,4 +1,4 @@
-import { select } from "d3";
+import { select, zoom } from "d3";
 import { getBGColor, getTextColor } from "../../helper";
 
 const createSVGPlot = (
@@ -15,7 +15,7 @@ const createSVGPlot = (
   const centerX = width / 2;
   const centerY = height;
   const radius = width / 2;
-  const radiusInMeters = 100;
+  const radiusInMeters = 160;
   const circleSpacing = 20;
   const numberOfCircles = radiusInMeters / circleSpacing;
 
@@ -25,8 +25,19 @@ const createSVGPlot = (
   // Clear the SVG
   svg.selectAll("*").remove();
 
+  // Create a group element to contain all the plot elements
+  const plotGroup = svg.append("g");
+
+  // Apply the zoom functionality to the plotGroup element
+  svg.call(
+    zoom().on("zoom", (event) => {
+      plotGroup.attr("transform", event.transform);
+    })
+  );
+
   // Draw rays
-  const rays = svg.selectAll(".ray").data([...Array(numberOfRays).keys()]);
+  const rays = plotGroup.selectAll(".ray").data([...Array(numberOfRays).keys()]);
+
   const newRays = rays
     .enter()
     .append("line")
@@ -62,7 +73,7 @@ const createSVGPlot = (
 
   // Draw circles
   for (let i = 1; i <= numberOfCircles; i++) {
-    svg
+    plotGroup
       .append("circle")
       .attr("cx", centerX)
       .attr("cy", centerY)
@@ -85,7 +96,7 @@ const createSVGPlot = (
         const y = centerY - radius * distanceFraction * Math.sin(angle);
 
         // Draw a white dot
-        svg
+        plotGroup
           .append("circle")
           .attr("cx", x)
           .attr("cy", y)
@@ -94,7 +105,7 @@ const createSVGPlot = (
           .attr("stroke", "black");
 
         // Overlay the depth value on the white dot
-        svg
+        plotGroup
           .append("text")
           .attr("x", x)
           .attr("y", y)
@@ -106,7 +117,6 @@ const createSVGPlot = (
       }
     }
   });
-
 };
 
 export default createSVGPlot;
