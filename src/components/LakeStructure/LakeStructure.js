@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Input, Button, Form, Space } from 'antd';
+import { Input, Button, Form, Space, Switch } from 'antd';
 import createSVGPlot from './createSVGPlot';
 import './LakeStructure.scss';
 
@@ -17,7 +17,7 @@ const LakeStructure = ({
   const [selectedRay, setSelectedRay] = useState(null);
   const [depthInputValue, setDepthInputValue] = useState('');
   const [rayDataState, setRayDataState] = useState(rayData.length ? rayData : Array(numberOfRays).fill([]));
-
+  const [zoomEnabled, setZoomEnabled] = useState(true);
 
   const svgRef = React.createRef();
 
@@ -27,6 +27,10 @@ const LakeStructure = ({
     if (!rayDataState[rayIndex]) {
       setRayDataState({ ...rayDataState, [rayIndex]: [] });
     }
+  };
+
+  const toggleZoom = () => {
+    setZoomEnabled(!zoomEnabled);
   };
 
   const handleDepthSubmit = () => {
@@ -65,10 +69,11 @@ const LakeStructure = ({
         rayDataState,
         distance,
         handleRayClick,
-        radiusInMeters
+        radiusInMeters,
+        zoomEnabled
       );
     }
-  }, [svgRef, numberOfRays, rayDataState, distance, handleRayClick, radiusInMeters]);
+  }, [svgRef, numberOfRays, rayDataState, distance, handleRayClick, radiusInMeters, zoomEnabled]);
 
   return (
     <div className="lake-structure">
@@ -102,6 +107,14 @@ const LakeStructure = ({
             min={1}
             step={0.1}
           />
+          <div className="zoom-button-container">
+            <Switch
+              checked={zoomEnabled}
+              onChange={toggleZoom}
+              checkedChildren="Zoom Enabled"
+              unCheckedChildren="Zoom Disabled"
+            />
+          </div>
         </Space>
       </Form.Item>
       <svg ref={svgRef} width="100%" height="300px" />

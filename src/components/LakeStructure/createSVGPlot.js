@@ -7,7 +7,8 @@ const createSVGPlot = (
   rayData,
   distance,
   onRayClick,
-  radiusInMeters
+  radiusInMeters,
+  zoomEnabled
 ) => {
   const svg = select(svgElement);
   const parentElement = svgElement.parentNode;
@@ -29,11 +30,13 @@ const createSVGPlot = (
   const plotGroup = svg.append("g");
 
   // Apply the zoom functionality to the plotGroup element
-  svg.call(
-    zoom().on("zoom", (event) => {
-      plotGroup.attr("transform", event.transform);
-    })
-  );
+  if (zoomEnabled) {
+    svg.call(
+      zoom().on("zoom", (event) => {
+        plotGroup.attr("transform", event.transform);
+      })
+    );
+  }
 
   // Draw rays
   const rays = plotGroup.selectAll(".ray").data([...Array(numberOfRays).keys()]);
