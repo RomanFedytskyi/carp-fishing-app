@@ -6,12 +6,14 @@ import LakePreview from '../LakePreview/LakePreview';
 import { collection, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { useAuth } from "../../AuthContext";
+import { useNavigate } from 'react-router-dom';
 
 import './LakeList.scss';
 
-const LakeList = ({ onLakeSelect }) => {
+const LakeList = () => {
   const { lakes } = useContext(LakesContext);
   const { currentUser } = useAuth();
+  const navigate = useNavigate();
 
   const getLastNotes = (notes) => {
     return notes
@@ -38,10 +40,10 @@ const LakeList = ({ onLakeSelect }) => {
       <List
         itemLayout="horizontal"
         dataSource={lakes}
-        renderItem={(lake, index) => (
+        renderItem={(lake) => (
           <List.Item
             className="lake-list-item"
-            onClick={() => onLakeSelect(index)}
+            onClick={() => navigate(`/lakes/${lake.id}`)}
           >
             <div className="lake-info">
               <List.Item.Meta title={lake.name} description={lake.description} />
@@ -66,7 +68,7 @@ const LakeList = ({ onLakeSelect }) => {
           </List.Item>
         )}
       />
-      <Button type="primary" onClick={() => onLakeSelect(null)}>
+      <Button type="primary" onClick={() => navigate('/lakes/new')}>
         Add Lake
       </Button>
     </div>

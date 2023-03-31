@@ -60,6 +60,10 @@ const LakeStructure = ({
     return rayData.some((ray) => ray.length > 0);
   };
 
+  const getSvgHeight = () => {
+    return window.innerWidth <= 768 ? '200px' : '500px';
+  };
+
   useEffect(() => {
     // Update the SVG plot when the number of rays or distance changes
     if (svgRef.current) {
@@ -117,7 +121,7 @@ const LakeStructure = ({
           </div>
         </Space>
       </Form.Item>
-      <svg ref={svgRef} width="100%" height="300px" />
+      <svg ref={svgRef} width="100%" height={getSvgHeight()} />
       {selectedRay !== null && (
         <div className="depth-form">
           <h4>Enter depth values for ray #{selectedRay + 1}</h4>

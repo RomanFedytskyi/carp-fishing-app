@@ -17,7 +17,7 @@ const SignIn = () => {
       setError("");
       setLoading(true);
       await signIn(emailRef.current.input.value, passwordRef.current.input.value);
-      navigate("/");
+      navigate("/lakes");
     } catch {
       setError("Failed to log in");
     }

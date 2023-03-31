@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import LakeMap from '../LakeMap/LakeMap';
 import { LakesContext } from '../../LakesContext';
 import LakeStructure from '../LakeStructure/LakeStructure';
@@ -10,13 +11,19 @@ import { db } from '../../firebase';
 import { doc, setDoc, addDoc, collection } from 'firebase/firestore';
 import { useAuth } from "../../AuthContext";
 
-const LakeEditor = ({ selectedLakeIndex, onClose }) => {
+const LakeEditor = ({ onClose }) => {
+  const navigate = useNavigate();
   const { lakes } = useContext(LakesContext);
-  const [name, setName] = useState(selectedLakeIndex !== null ? lakes[selectedLakeIndex].name : '');
-  const [description, setDescription] = useState(selectedLakeIndex !== null ? lakes[selectedLakeIndex].description : '');
+  const { currentUser } = useAuth();
+  const { lakeId } = useParams();
+  const selectedLake = lakes.find((lake) => lake.id === lakeId); // Find the lake by lakeId
+  const isNewLake = !selectedLake;
+
+  const [name, setName] = useState(!isNewLake ? selectedLake.name : '');
+  const [description, setDescription] = useState(!isNewLake ? selectedLake.description : '');
   const [notes, setNotes] = useState(
-    selectedLakeIndex !== null
-      ? lakes[selectedLakeIndex].notes.map((note) => {
+    !isNewLake
+      ? selectedLake.notes.map((note) => {
           if (note.type === 'simple') {
             return {
               type: note.type,
@@ -33,37 +40,36 @@ const LakeEditor = ({ selectedLakeIndex, onClose }) => {
         })
       : []
   );
-  const { currentUser } = useAuth();
 
   const [location, setLocation] = useState(
-    selectedLakeIndex !== null
-      ? lakes[selectedLakeIndex].location
+    !isNewLake
+      ? selectedLake.location
       : { lat: 40.730610, lng: -73.935242 }
   );
   const [markerPosition, setMarkerPosition] = useState(
-    selectedLakeIndex !== null ? lakes[selectedLakeIndex].location : location
+    !isNewLake ? selectedLake.location : location
   );
   const rayDataArray =
-  selectedLakeIndex !== null
-    ? lakes[selectedLakeIndex].rayData.map((rayObj) => {
-        return Object.values(rayObj)[0];
-      })
-    : [];
+    !isNewLake
+      ? selectedLake.rayData.map((rayObj) => {
+          return Object.values(rayObj)[0];
+        })
+      : [];
   const [rayData, setRayData] = useState(
-    selectedLakeIndex !== null ? rayDataArray : []
+    !isNewLake ? rayDataArray : []
   );
   const [distance, setDistance] = useState(
-    selectedLakeIndex !== null ? lakes[selectedLakeIndex].distance : 1
+    !isNewLake ? selectedLake.distance : 1
   );
   const [numberOfRays, setNumberOfRays] = useState(
-    selectedLakeIndex !== null ? lakes[selectedLakeIndex].numberOfRays : 7
+    !isNewLake ? selectedLake.numberOfRays : 7
   );
   const [radiusInMeters, setRadiusInMeters] = useState(
-    selectedLakeIndex !== null ? lakes[selectedLakeIndex].radiusInMeters : 100
+    !isNewLake ? selectedLake.radiusInMeters : 100
   );
 
   useEffect(() => {
-    if (selectedLakeIndex === null) {
+    if (isNewLake) {
       getCurrentLocation();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -109,19 +115,19 @@ const LakeEditor = ({ selectedLakeIndex, onClose }) => {
       radiusInMeters
     };
 
-    if (selectedLakeIndex !== null) {
-      const lakeRef = doc(db, "users", currentUser.uid, "userLakes", lakes[selectedLakeIndex].id);
+    if (!isNewLake) {
+      const lakeRef = doc(db, "users", currentUser.uid, "userLakes", selectedLake.id);
       await setDoc(lakeRef, newLake);
     } else {
       await addDoc(collection(db, "users", currentUser.uid, "userLakes"), newLake);
     }
 
-    onClose();
+    navigate('/lakes');
   };
 
   return (
     <div className="lake-editor">
-      <h2>{selectedLakeIndex !== null ? 'Edit Lake' : 'Add Lake'}</h2>
+      <h2>{!isNewLake ? 'Edit Lake' : 'Add Lake'}</h2>
       <Form layout="vertical">
         <LakeDetails
           name={name}
@@ -147,9 +153,9 @@ const LakeEditor = ({ selectedLakeIndex, onClose }) => {
         />
         <Form.Item>
           <Button type="primary" onClick={handleSubmit}>
-            {selectedLakeIndex !== null ? 'Save' : 'Add'}
+            {!isNewLake ? 'Save' : 'Add'}
           </Button>
-          <Button onClick={onClose} style={{ marginLeft: 8 }}>
+          <Button onClick={() => navigate('/lakes')} style={{ marginLeft: 8 }}>
             Cancel
           </Button>
         </Form.Item>

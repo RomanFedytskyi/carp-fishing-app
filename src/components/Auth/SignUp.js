@@ -22,7 +22,7 @@ const SignUp = () => {
       setError("");
       setLoading(true);
       await signUp(emailRef.current.input.value, passwordRef.current.input.value);
-      navigate("/");
+      navigate("/lakes");
     } catch {
       setError("Failed to create an account");
     }

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import React from "react";
+import { BrowserRouter as Router, Route, Routes, Outlet } from "react-router-dom";
 import { AuthProvider, useAuth } from "./AuthContext";
 import SignIn from "./components/Auth/SignIn";
 import SignUp from "./components/Auth/SignUp";
@@ -19,6 +19,7 @@ function App() {
           <Routes>
             <Route path="/sign-in" element={<SignIn />} />
             <Route path="/sign-up" element={<SignUp />} />
+            <Route path="/lakes" element={<PrivateWrapper />} />
             <Route path="/*" element={<PrivateWrapper />} />
           </Routes>
         </Router>
@@ -34,27 +35,16 @@ const PrivateWrapper = () => {
 };
 
 const ProtectedApp = () => {
-  const [selectedLakeIndex, setSelectedLakeIndex] = useState(null);
-  const [isEditorOpen, setIsEditorOpen] = useState(false);
-
   return (
     <Layout className="App">
       <AppHeader />
       <Layout.Content>
-        {!isEditorOpen && (
-          <LakeList
-            onLakeSelect={(index) => {
-              setSelectedLakeIndex(index);
-              setIsEditorOpen(true);
-            }}
-          />
-        )}
-        {isEditorOpen && (
-          <LakeEditor
-            selectedLakeIndex={selectedLakeIndex}
-            onClose={() => setIsEditorOpen(false)}
-          />
-        )}
+        <Routes>
+          <Route path="/" element={<LakeList />} />
+          <Route path="/lakes" element={<LakeList />} />
+          <Route path="/lakes/:lakeId" element={<LakeEditor />} />
+          <Route path="*" element={<Outlet />} />
+        </Routes>
       </Layout.Content>
     </Layout>
   );
